@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.svm.backend.modules.ums.mapper.UmsAdminMapper">
+
+    <!-- 通用查詢mapping结果 -->
+    <resultMap id="BaseResultMap" type="com.svm.backend.modules.ums.model.UmsAdmin">
+        <id column="id" property="id"/>
+<!--        <result column="company_id" property="companyId"/>-->
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="mobile" property="mobile"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="note" property="note"/>
+        <result column="status" property="status"/>
+        <result column="org_id" property="orgId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="login_time" property="loginTime"/>
+        <result column="logout_time" property="logoutTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_name" property="createName"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_name" property="updateName"/>
+    </resultMap>
+
+    <select id="getAdminIdList" resultType="java.lang.Long">
+        SELECT DISTINCT ar.admin_id
+        FROM ums_role_resource_relation rr
+                 LEFT JOIN ums_admin_role_relation ar ON rr.role_id = ar.role_id
+        WHERE rr.resource_id = #{resourceId}
+    </select>
+
+    <select id="getAdminUserByUsername" resultType="com.svm.backend.modules.ums.model.UmsAdmin">
+        select a.*,
+               b.name    as orgName,
+               b.name_sn as orgSn
+        from ums_admin a
+                 left join oms_organization b on (a.org_id = b.id)
+        WHERE a.username like concat('%', #{username}, '%')
+    </select>
+
+    <select id="getAllUser" resultType="com.svm.backend.modules.ums.model.UmsAdmin">
+        select a.*,
+               b.name    as orgName,
+               b.name_sn as orgSn
+        from ums_admin a
+                 left join oms_organization b on (a.org_id = b.id)
+    </select>
+
+    <select id="getAdminByUsername" resultType="com.svm.backend.modules.ums.model.UmsAdmin">
+        select a.*
+        from ums_admin a
+        where a.username = #{username}
+    </select>
+
+</mapper>

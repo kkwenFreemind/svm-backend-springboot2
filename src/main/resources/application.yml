@@ -1,0 +1,163 @@
+server:
+  port: 8080
+
+spring:
+# autoconfigure for RabbitHealthIndicator - Health check failed
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+  main:
+    allow-circular-references: true
+  application:
+    name: myProject
+  profiles:
+    active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    auto-mapping-behavior: partial
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  tokenHeader: Authorization
+  secret: piteam+70771579
+  expiration: 28800
+  tokenHead: 'Bearer'
+
+management:
+  endpoints:
+    health:
+      show-details: always
+    web:
+      exposure:
+#        include: "*"
+#        include: prometheus,health,beans,conditions,env,mappings,loggers
+        include: health,prometheus
+  endpoint:
+    shutdown:
+      enabled: false
+
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    com.svm.backend: trace
+
+secure:
+  ignored:
+    urls: #url白名單
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.ico
+      - /actuator/health
+      - /actuator/prometheus
+      - /druid/**
+      - /v3/**
+      - /swagger-ui/**
+      - /admin/login
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

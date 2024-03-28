@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.svm.backend.modules.dashboard.mapper.SalesMapper">
+
+    <!-- 通用查詢mapping结果 -->
+    <resultMap id="BaseResultMap" type="com.svm.backend.modules.dashboard.model.Sales">
+        <id column="row_id" property="id"/>
+        <result column="cpname" property="cpname"/>
+        <result column="machine" property="machine"/>
+        <result column="name" property="name"/>
+        <result column="amount" property="amount"/>
+        <result column="volume" property="volume"/>
+        <result column="tx_time" property="txTime"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+
+    <select id="getTodayAmount" resultType="java.lang.Long">
+        SELECT sum(t.amount * t.volume) )
+        FROM
+            sales t
+        WHERE t.txTime between '2022-11-01 00:00:00' and '2022-12-01 00:00:00'
+    </select>
+
+    <select id="getSalesProdCount" resultType="com.svm.backend.modules.dashboard.dto.SalesCount">
+        select t.name, count(t.name) as value
+        from sales t
+        where t.tx_time between '2022-11-01 00:00:00' and '2022-12-01 00:00:00'
+        group by t.name
+        order by value desc LIMIT 5
+    </select>
+
+    <select id="getSalesAmountLastMonth" resultType="com.svm.backend.modules.dashboard.dto.TimeAmount">
+        select date_format(t.tx_time, '%m/%d') as time , sum(t.amount*t.volume)/1000 as amount
+        from mydb.sales t
+        where date_format(t.tx_time, '%Y-%m')=date_format(DATE_SUB('2022-12-01', INTERVAL 1 MONTH), '%Y-%m')
+        group by time;
+    </select>
+
+
+    <select id="getSalesAmountLastWeek" resultType="com.svm.backend.modules.dashboard.dto.TimeAmount">
+        select date_format(t.tx_time, '%m/%d') as time , sum(t.amount*t.volume)/1000 as amount
+        from mydb.sales t
+        where YEARWEEK(date_format(t.tx_time,'%Y-%m-%d')) = YEARWEEK('2022-12-01')-1
+        group by time;
+    </select>
+
+    <select id="getSalesAmount" resultType="com.svm.backend.modules.dashboard.dto.TimeAmount">
+        select date_format(t.tx_time, '%m/%d') as time , sum(t.amount*t.volume) as amount
+        from sales t
+        where t.tx_time between '2022-11-01 00:00:00' and '2022-12-01 00:00:00'
+        group by time;
+    </select>
+
+    <select id="getSalesCount" resultType="com.svm.backend.modules.dashboard.dto.TimeAmount">
+        select date_format(t.tx_time, '%m/%d') as time , count(date_format(t.tx_time,'%m/%d')) as amount
+        from sales t
+        where t.tx_time between '2022-11-01 00:00:00' and '2022-12-01 00:00:00'
+        group by time;
+    </select>
+
+    <select id="getHotMachine" resultType="com.svm.backend.modules.dashboard.dto.SalesCount">
+        select cpname as name, count(cpname) as value
+        from mydb.sales t
+        where t.tx_time between '2022-11-01 00:00:00' and '2022-12-01 00:00:00'
+        group by cpname
+        order by value desc limit 5
+    </select>
+
+    <select id="getTodaySalesCount" resultType="java.lang.Integer">
+        select count(*) as amount
+        from sales t
+        where  DATE(t.tx_time) = current_date()
+    </select>
+</mapper>

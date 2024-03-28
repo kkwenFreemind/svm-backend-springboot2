@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+
+    <!-- 格式化輸出：%date表示日期，%thread表示執行緒名，%-5level：級別從左顯示5個字元寬度 %msg：日誌訊息，%n是換行符-->
+    <property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- 定義日誌儲存的路徑，不要配置相對路徑 -->
+    <property name="FILE_PATH" value="/home/kevin/project/log"/>
+
+
+    <!-- 控制檯輸出日誌 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 按照上面配置的LOG_PATTERN來列印日誌 -->
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--每天生成一個日誌檔案，儲存15天的日誌檔案。rollingFile是用來切分檔案的 -->
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${FILE_PATH}\MyProject.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- keep 15 days' worth of history -->
+            <maxHistory>15</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- 日誌檔案的最大大小 -->
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- project default level -->
+    <logger name="my.demo.hello" level="INFO"/>
+
+    <!-- 日誌輸出級別 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+
+</configuration>

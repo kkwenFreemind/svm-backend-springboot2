@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.svm.backend.modules.dms.mapper.DmsDeviceMapper">
+
+    <!-- 通用查詢mapping结果 -->
+    <resultMap id="BaseResultMap" type="com.svm.backend.modules.dms.model.DmsDevice">
+        <id column="id" property="id"/>
+<!--        <result column="company_id" property="companyId"/>-->
+        <result column="org_id" property="orgId"/>
+        <result column="device_type" property="deviceType"/>
+        <result column="city_id" property="cityId"/>
+        <result column="area_id" property="areaId"/>
+        <result column="address" property="address"/>
+        <result column="deviceSn" property="deviceSn"/>
+        <result column="alis_name" property="alisName"/>
+        <result column="lat" property="lat"/>
+        <result column="lng" property="lng"/>
+        <result column="create_time" property="createTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <select id="getDeviceList" resultType="com.svm.backend.modules.dms.model.DmsDevice">
+        select a.*,
+               b.name                            as deviceTypeName,
+               c.name_sn                         as orgSn,
+               c.name                            as orgName,
+               d.name                            as cityName,
+               e.name                            as areaName,
+               CONCAT(d.name, e.name, a.address) as fullAddress
+        from dms_device a
+                 left join dms_device_category b on (a.device_type = b.id)
+                 left join oms_organization c on (a.org_id = c.id)
+                 left join ams_city d on (a.city_id = d.id)
+                 left join ams_area e on (a.area_id = e.id)
+    </select>
+
+</mapper>

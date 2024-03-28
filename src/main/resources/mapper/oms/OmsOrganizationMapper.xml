@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.svm.backend.modules.oms.mapper.OmsOrganizationMapper">
+
+    <resultMap id="BaseResultMap" type="com.svm.backend.modules.oms.model.OmsOrganization">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name_sn" property="nameSn"/>
+        <result column="name" property="name"/>
+        <result column="level" property="level"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="sort" property="sort"/>
+<!--        <result column="company_id" property="companyId"/>-->
+    </resultMap>
+
+    <select id="getOrgListByParentId" resultType="com.svm.backend.modules.oms.model.OmsOrganization">
+        SELECT m.*
+        FROM oms_organization m
+        WHERE m.parent_id = #{parentId}
+    </select>
+
+<!--    <select id="getOrgListByCompanyId" resultType="com.svm.backend.modules.oms.model.OmsOrganization">-->
+<!--        SELECT m.*-->
+<!--        FROM oms_organization m-->
+<!--        WHERE m.company_id = #{companyId}-->
+<!--    </select>-->
+
+    <select id="getOrgByName" resultType="com.svm.backend.modules.oms.model.OmsOrganization">
+        SELECT m.*
+        FROM oms_organization m
+        WHERE m.name = #{name}
+    </select>
+
+
+    <select id="getOrgMax" resultType="java.lang.Long">
+        SELECT count(*) as maxvalue
+        FROM oms_organization
+    </select>
+</mapper>

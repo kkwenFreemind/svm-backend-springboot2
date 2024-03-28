@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.svm.backend.modules.dashboard.mapper.EventsMapper">
+
+    <!-- 通用查詢mapping结果 -->
+    <resultMap id="BaseResultMap" type="com.svm.backend.modules.dashboard.model.Events">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="machine" property="machine"/>
+        <result column="name" property="name"/>
+        <result column="cpname" property="cpname"/>
+        <result column="event_time" property="eventTime"/>
+    </resultMap>
+
+    <select id="getEventFail" resultType="com.svm.backend.modules.dashboard.dto.EventsCount">
+        SELECT cpname as 'name', count(name) as value
+        FROM mydb.events t
+        where t.event_time between '2022-01-01 00:00:00'
+          and '2022-12-31 00:00:00'
+          and type = #{eventType}
+        group by cpname
+        order by value desc
+            limit 5
+    </select>
+
+    <select id="getDeliverEventFail" resultType="com.svm.backend.modules.dashboard.dto.EventsCount">
+        SELECT name as 'name', count(name) as value
+        FROM mydb.events t
+        where t.event_time between '2022-01-01 00:00:00'
+          and '2022-12-31 00:00:00'
+          and type = #{eventType}
+        group by name
+        order by value desc
+            limit 5
+    </select>
+
+    <select id="getEventCount" resultType="com.svm.backend.modules.dashboard.dto.EventsCount3">
+        SELECT date_format(t.event_time, '%m/%d') as name,
+               sum(case when type = '出貨失敗' then 1 else 0 end) as 'deliverEvent', sum(case when type = '溫度異常' then 1 else 0 end) as 'tempEvent', sum(case when type = '離線超過30分鐘' then 1 else 0 end) as 'offlineEvent'
+        FROM mydb.events t
+        where t.event_time between '2022-11-01 00:00:00' and '2022-12-31 00:00:00'
+        group by date_format(t.event_time, '%m/%d')
+    </select>
+</mapper>
